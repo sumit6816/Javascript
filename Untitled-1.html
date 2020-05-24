@@ -22,22 +22,38 @@
 
 <body>
     <h1 id="headingtot"></h1>
-     <input id="txt" type="text"> </input>
+     <input id="expenseval" type="text"> 
+    <input id="inputDesc" type="text">
   <button id="btnexpense">+</button>
    
     
   <script>
+      //get the heading element
         const headingele=document.querySelector("#headingtot");
+      //get the reference to desc element
+        const inputDescele=document.querySelector("#inputDesc");
+      //ref to input amount
+      const inputele=document.querySelector("#expenseval");
         let total=0;
           headingele.textContent=total;
+      
+      //all expenses at one place
+      const allexpense=[];
         function AddExp(){
-            const inputele=document.querySelector("#txt");
+            const expenseItem={}  //empty object;
+            //read value from input amount
             const val=inputele.value;
-            //console.log({val});
+            //read value from input text
+            const textDesc=inputDescele.value;
             
+                        
             const expense=parseInt(val,10);    
+            expenseItem.desc=textDesc;
+            expenseItem.amount=expense;
             
-            
+            allexpense.push(expenseItem);
+            console.clear();
+            console.table(allexpense);
             total=total+expense;
             headingele.textContent=total;
         }
