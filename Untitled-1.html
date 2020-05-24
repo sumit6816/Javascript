@@ -1,0 +1,53 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>personal expense app</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+  <style>
+     body{
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         align-items: center;
+         height: 100vh;
+     }
+  </style>
+    
+  
+</head>
+
+<body>
+    <h1 id="headingtot"></h1>
+     <input id="txt" type="text"> </input>
+  <button id="btnexpense">+</button>
+   
+    
+  <script>
+        const headingele=document.querySelector("#headingtot");
+        let total=0;
+          headingele.textContent=total;
+        function AddExp(){
+            const inputele=document.querySelector("#txt");
+            const val=inputele.value;
+            //console.log({val});
+            
+            const expense=parseInt(val,10);    
+            
+            
+            total=total+expense;
+            headingele.textContent=total;
+        }
+      
+        //Get th button element
+     const element=document.querySelector("#btnexpense");
+        //listen to click event
+      element.addEventListener("click",AddExp,false);
+      
+     
+    </script>
+</body>
+</html>
