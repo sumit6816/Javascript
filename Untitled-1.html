@@ -7,24 +7,70 @@
   <title>personal expense app</title>
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
-  <style>
-     body{
-         display: flex;
-         flex-direction: column;
-         justify-content: center;
-         align-items: center;
-         height: 100vh;
-     }
-  </style>
+  <link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+			crossorigin="anonymous"
+		/>
+    <script
+			defer
+			src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"
+			integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP"
+			crossorigin="anonymous"
+		></script>
     
   
 </head>
 
 <body>
-    <h1 id="headingtot"></h1>
-     <input id="expenseval" type="text"> 
-    <input id="inputDesc" type="text">
-  <button id="btnexpense">+</button>
+    <nav class="navbar navbar-dark bg-dark">
+			<span class="navbar-brand mb-0 h1">Express Manager</span>
+            <span class="navbar-brand mb-0 h1" id="headingtot"></span>
+		</nav>
+    <div class="container-fluid bg-light" style="min-height: 100vh">
+      <div class=container>
+          <div class="jumbotron mt-4">
+					<div class="input-group mb-3">
+						<input
+							type="text"
+							class="form-control"
+                            id="expenseval"
+							placeholder="Amount spent"
+							aria-label="Amount spent"
+							aria-describedby="spent in rupee"
+						/>
+						<div class="input-group-append">
+							<span class="input-group-text" id="spent in rupee">₹</span>
+						</div>
+					</div>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="spent at">@</span>
+						</div>
+						<input
+							type="text"
+							class="form-control"
+                               id="inputDesc"
+							placeholder="spent On"
+							aria-label="spent On"
+							aria-describedby="spent at"
+						/>
+						<div class="input-group-append">
+							<button class="btn btn-outline-primary" type="button" id="btnexpense">Add</button>
+						</div>
+					</div>
+				</div>
+          <div>
+              <ul class="list-group" id="expenseTable">
+              
+              </ul>
+           
+          </div>
+        
+      </div>   
+    </div>
+    
    
     
   <script>
@@ -34,11 +80,14 @@
         const inputDescele=document.querySelector("#inputDesc");
       //ref to input amount
       const inputele=document.querySelector("#expenseval");
+      //get ref to div
+      const expenseTableEl=document.querySelector("#expenseTable");
+      
         let total=0;
           headingele.textContent=total;
       
       //all expenses at one place
-      const allexpense=[];
+      let allexpense=[];
         function AddExp(){
             const expenseItem={}  //empty object;
             //read value from input amount
@@ -50,12 +99,17 @@
             const expense=parseInt(val,10);    
             expenseItem.desc=textDesc;
             expenseItem.amount=expense;
+            expenseItem.moment= new Date();
             
             allexpense.push(expenseItem);
-            console.clear();
-            console.table(allexpense);
+//            console.clear();
+//            console.table(allexpense);
             total=total+expense;
-            headingele.textContent=total;
+            const someText=`Total expense till now: ${total} `;
+            headingele.textContent=someText;
+ 
+            
+            renderList(allexpense);
         }
       
         //Get th button element
@@ -63,7 +117,71 @@
         //listen to click event
       element.addEventListener("click",AddExp,false);
       
-     
+      //Controller Functions
+      
+      //Get Data String
+      function getDateString(momento){
+          return momento.toLocaleDateString('en-US',{
+                             year: 'numeric',
+                             month: 'long',
+                             day  : 'numeric'
+                            })
+      }
+      
+      //Delete items
+      function deleteItem(dateValue){
+          //1st method
+//          const newArr=[];
+//          for(let i=0; i<allexpense.length;i++){
+//              if(allexpense[i].moment.valueOf()!==dateValue){
+//                     newArr.push(allexpense[i]);  
+//              }
+//          }
+          //2nd method
+//          const newArr=allexpense.filter(expense => {
+//              if(expense.moment.valueOf()!==dateValue){
+//                  return expense;
+//              }
+//          });
+          
+          const newArr=allexpense.filter(expense=> expense.moment.valueOf()!==dateValue);
+         allexpense.length=0;
+          allexpense=newArr.slice();
+          renderList(newArr);
+          
+      }
+      
+      //view Layer
+      function renderList(arrOfList){
+           const allExpenseHtml=arrOfList.map(expense =>createListItem(expense));
+          const joinedAllExpenseHtml=allExpenseHtml.join("");
+    
+            expenseTableEl.innerHTML=joinedAllExpenseHtml;
+          
+      }
+     function createListItem({desc,amount, moment}){
+         return `
+                          <li class="list-group-item d-flex justify-content-between">
+							<div class="d-flex flex-column">
+								${desc}
+				           <small class="text-muted">${getDateString(moment)}</small>
+							</div>
+							<div>
+								<span class="px-5">
+									${amount}
+								</span>
+								<button 
+                                type="button" 
+                                class="btn btn-outline-danger btn-sm"
+                                onclick="deleteItem(${moment.valueOf()})"
+                                >
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</div>
+						</li>
+                        `;
+         
+     }
     </script>
 </body>
 </html>
